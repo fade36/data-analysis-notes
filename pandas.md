@@ -105,3 +105,72 @@ Used in loc args:
 `dataframe["field"] = val` will assign to every row value 'val'
 
 If "field" does not exist -> will create and put to the end of all cols
+
+---
+
+## Summary functions and maps
+
+### Summary functions
+
+Shrink a column into a result.
+
+- `df.col.describe()`: type-aware summary. For numbers: `count, mean, std, min, 25%, 50%, 75%, max`. For strings: `count, unique, top, freq`
+- `df.col.mean()`: mean (skips NaN)
+- `df.col.unique()`: array of distinct values
+- `df.col.value_counts()`: how many times each value occurs (NaN is not counted by default)
+- `df.col.max()` returns the **value**, `df.col.idxmax()` returns the **index label** of the row where the max is
+
+### Maps
+
+Transform every value into a new one. Length stays the same.
+
+`Series.map(func)`: `func` gets **one value** and returns the new value.
+
+```python
+m = df.points.mean()
+df.points.map(lambda p: p - m)
+```
+
+`p` is the parameter of the lambda. `map` passes every value of the column into it, one by one.
+
+`DataFrame.apply(func, axis=...)`: `func` gets a **whole row or column**.
+
+- `axis="columns"`: function gets one **row** at a time
+- `axis="index"`: function gets one **column** at a time
+
+```python
+def remean_points(row):
+    row.points = row.points - m
+    return row
+
+df.apply(remean_points, axis="columns")
+```
+
+`map` and `apply` return a **new** object, the original is not changed. To keep the result: `df["new_col"] = df.points.map(...)`.
+
+### Vectorized operations (preferred)
+
+Operators work on whole columns and are faster than `map` / `apply`:
+
+```python
+df.points - m                       # column minus a single number
+df.country + " - " + df.region      # column + column (NaN if any part is NaN)
+df.points / df.price                # element by element
+```
+
+`+ - * / > < ==` all work this way.
+
+Use `map` / `apply` only when plain operators are not enough (e.g. `if / else` logic or several columns of one row):
+
+```python
+df.points.map(lambda p: "high" if p >= 90 else "low")
+```
+
+### Example: best bargain (highest points per price)
+
+```python
+ratio = reviews.points / reviews.price
+ind = ratio.idxmax()
+bargain_wine = reviews.loc[ind, "title"]
+```
+
