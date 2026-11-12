@@ -174,3 +174,43 @@ ind = ratio.idxmax()
 bargain_wine = reviews.loc[ind, "title"]
 ```
 
+# Grouping and Sorting 
+
+## Grouping
+
+Group by synta in pd:
+```
+dataframe.groupby('field1').field2.(any aggregate func)
+```
+
+for instance wine dataset:
+
+```
+reviews.groupby('winery').apply(lambda df: df.title.iloc[0])
+```
+
+`reviews.groupby('winery')` returns groups of wines group by winery
+`apply(lambda df: df.title.iloc[0])` works with each group one by one, returning first title of each group
+
+```reviews.groupby(['country']).price.agg([len, min, max])```
+allows to run a bunch of aggregate funs in one time. Returns DataFrame
+
+## Multi-indexes
+
+if group by used with several parameters, we can get initial df by:
+
+`countries_reviewed.reset_index()`
+
+# Sorting 
+
+`sort_values()` Like order by in SQL. by default - asc. accepts more then one field in []
+
+```sort_values(by='field, ascending= True / False ')```
+
+`sort_index()` - sort in index order
+
+
+
+
+
+ 
