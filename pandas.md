@@ -174,11 +174,13 @@ ind = ratio.idxmax()
 bargain_wine = reviews.loc[ind, "title"]
 ```
 
+---
+
 # Grouping and Sorting 
 
 ## Grouping
 
-Group by synta in pd:
+Group by syntax in pd:
 ```
 dataframe.groupby('field1').field2.(any aggregate func)
 ```
@@ -201,13 +203,152 @@ if group by used with several parameters, we can get initial df by:
 
 `countries_reviewed.reset_index()`
 
-# Sorting 
+## Sorting 
 
 `sort_values()` Like order by in SQL. by default - asc. accepts more then one field in []
 
 ```sort_values(by='field, ascending= True / False ')```
 
 `sort_index()` - sort in index order
+
+---
+
+# Data types and missing values 
+
+## Data types 
+
+to check data type of the column:
+
+```python
+dataframe.field.dtype
+```
+
+to change data type, if its possible:
+
+```python
+dataframe.field.astype("float64" / "int64" ...)
+```
+
+## Missing values
+
+to check column on NaN\`s:
+
+```python
+dataframe[pd.isnull(dataframe.field)]
+```
+
+to replace missing value:
+
+```python
+dataframe.field.fillna("It is missing")
+```
+
+### Replace a non-null value
+
+```python
+dataframe.field.replace("This", "On this")
+```
+
+---
+
+# Renaming and Combining
+
+## Renaming
+
+Syntax:
+
+Column renaming:
+
+```python
+dataframe.rename(columns={'old': 'new'})
+```
+
+Rows(index) renaming:
+```python
+dataframe.rename(index={0: 'firstEntry', 1: 'secondEntry'})
+```
+
+To rename not values but axis:
+
+```python
+dataframe.rename_axis("new_name_4_row", axis="index").rename_axis("new_name_4_col", axis="columns")
+```
+
+## Combining
+
+### Three core methods:
+
+#### concat():
+
+- Joins dataframes along particular axis
+
+Syntax:
+
+```python
+pd.concat([dataframe1, dataframe2, ...], axis=0/1, ignore_index=True/False)
+```
+axis=0 -> joins dataframes by rows
+axis=1 -> joins dataframes by cols
+ignore_index=True -> creates new index sequence
+ignore_index=False -> keeps initial index sequence
+
+#### join():
+
+- Joins dataframes by index
+- Left join by default
+
+Syntax:
+
+```python
+first.join(second)
+```
+
+if there are equal col names in both of the dataframes, use fro example:
+
+```python
+first.join(second, lsuffix=_fromFirst, rsuffix=fromSecond) 
+```
+
+if inner join needed use:
+
+```python
+first.join(second, how="inner"") 
+```
+
+Example on Powerlifting datasets:
+
+```python
+powerlifting_meets.set_index("MeetID").join(powerlifting_competitors.set_index("MeetID"))
+```
+
+#### merge():
+
+- Similar to joins in sql
+- There are 4 types of merges: how=("inner", "outer", "left", "right")
+- How to join ? 
+
+	- If indicies are equal -> on="id"
+	- Else -> left_on="id_1", right_on="id_2"
+
+Syntax on some students datasets:
+
+```python
+pd.merge(students, grades, on="student_id", how="inner/outer/left/right")
+```
+
+With different indicies:
+
+```python
+pd.merge(students, grades, left_on="student_id", right_on="id")
+```
+
+
+
+
+
+
+
+
 
 
 
