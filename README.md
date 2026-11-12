@@ -1,6 +1,7 @@
-# Data Analysis Notes
+# Data Analysis + GIT Notes
 
 My notes while learning data analysis with Python.
+Also some GIT terminal commands divided by topics
 
 ## Progress
 
